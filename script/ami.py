@@ -15,7 +15,7 @@ password=getpass.getpass(prompt="Enter the password")
 rec_email=input("Enter receiver's email address:")
 email=smtplib.SMTP('smtp.gmail.com', 587)
 
-older_age = datetime.datetime.now() - datetime.timedelta(days=10)
+older_age = datetime.datetime.now() - datetime.timedelta(days=30)
 time_iso = older_age.isoformat()
 print(time_iso)
 client=boto3.client('ec2')
