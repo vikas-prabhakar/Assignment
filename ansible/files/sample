@@ -1,0 +1,5 @@
+#!/usr/bin/python3.5
+import os
+disk_usage=os.popen("df -h").readlines()
+from pprint import pprint
+pprint(disk_usage)

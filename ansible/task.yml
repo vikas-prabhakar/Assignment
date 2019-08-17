@@ -1,0 +1,80 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: install dependencies of Centos
+      package:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - libpcap 
+        - libpcap-devel
+        - ncurses
+        - ncurses-devel     
+      when: ansible_os_family == 'RedHat'
+
+    - name: install  dependencies of Ubuntu
+      package:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - libncursesw5-dev
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: install iotop iftop and wget package
+      package:
+        name: "{{item}}"
+        state: present
+      with_items:
+        - wget 
+        - iotop
+        - iftop
+
+    - name: Download source package of htop and ncdu 
+      get_url:
+        url: "{{item}}"
+        dest: /opt/
+      with_items:
+        - http://hisham.hm/htop/releases/2.1.0/htop-2.1.0.tar.gz
+        - https://dev.yorhel.nl/download/ncdu-1.13.tar.gz
+
+    - name: Unarchive htop and ncdu 
+      unarchive:
+        src: /opt/{{item}}
+        dest: /opt/
+        remote_src: yes
+      with_items:
+        - htop-2.1.0.tar.gz
+        - ncdu-1.13.tar.gz
+
+    - name: Configure ncdu and htop
+      command: "{{item.cmd}}"
+      args:
+        chdir: "{{item.path}}"
+      with_items:
+        - { cmd: "./configure --prefix=/usr", path: "/opt/ncdu-1.13"}
+        - { cmd: "./configure --prefix=/usr", path: "/opt/htop-2.1.0"}
+
+    - name: Make
+      shell: make && make install
+      args:
+        chdir: "{{item}}"
+      with_items:
+        - /opt/htop-2.1.0
+        - /opt/ncdu-1.13
+
+    - name: Copy script file
+      copy:
+        src: sample
+        dest: /tmp/sample.py
+        mode: 0655
+
+    - name: Execute the script
+      shell: /tmp/sample.py >> /tmp/output.txt
+      when: ansible_os_family == 'RedHat'
+
+    - name: Copy output of script
+      fetch:
+        src: /tmp/output.txt
+        dest: /tmp/
+        fail_on_missing: no
+        flat: yes
