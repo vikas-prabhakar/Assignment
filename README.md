@@ -1,6 +1,6 @@
 # Assignment
 
-It contain node app with docker compose,python script to delete 30 days older AWS EC@ AMIs and ansibe playbook
+It contain node app with docker compose,python script to delete 30 days older AWS EC2 AMIs and ansibe playbook
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
