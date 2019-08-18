@@ -17,7 +17,6 @@ email=smtplib.SMTP('smtp.gmail.com', 587)
 
 older_age = datetime.datetime.now() - datetime.timedelta(days=30)
 time_iso = older_age.isoformat()
-print(time_iso)
 client=boto3.client('ec2')
 respone=client.describe_images(
     Filters=[{'Name':'tag:delete', 'Values':['yes']},
